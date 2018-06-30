@@ -36,7 +36,10 @@ TEST_FEATURES = [
     u'До промки(км)', u'До парка(км)', u'До парка пешком(км)',
     u'Станций метро от кольца', u'Площадь двора', u'Курс',
     u'Cтавка по ипотеке', u'Вклады до 1 года', u'Вклады от 1 года до 3 лет',
-    u'Вклады свыше 3 лет'
+    u'Вклады свыше 3 лет',
+    # u'year',
+    # u'time'
+    u'bulk_cat'
 ]
 
 CATEGORICAL_FEATURES = [
@@ -50,6 +53,7 @@ CATEGORICAL_FEATURES = [
 "Система мусоротведения",
 "Подземная парковка",
 "Двор без машин"
+"bulk_cat"
 ]
 
 
@@ -73,8 +77,12 @@ def preprocess(data, categorical_features):
     for feature_name in categorical_features:
         data[feature_name] = data[feature_name].str.decode('utf-8').astype('category').cat.codes
 
-    # Transforming date
+    # Bulk cat
 
+
+    # Adding date features
+    # data['year'] = data.date1.str[:4].astype(float)
+    # data['time'] = data.year + data.date1.str[5:7].astype(float)/ 12.
 
     # Column names decoding
     data.columns = [c.decode('utf-8') for c in data.columns]
@@ -82,7 +90,7 @@ def preprocess(data, categorical_features):
     return data
 
 
-def preprocess_train(data, categotical_features=CATEGORICAL_FEATURES, features=FEATURES):
+def preprocess_train(data, categotical_features=CATEGORICAL_FEATURES, features=TEST_FEATURES):
     data = preprocess(data, categorical_features=categotical_features)
     y = data.value.values
     X = data[features].values
