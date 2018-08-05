@@ -18,7 +18,6 @@ X, y = preprocess_train(train,
 
 X, y = shuffle(X, y)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.75)
 
 # Training simple model
 from catboost import CatBoostRegressor
@@ -26,7 +25,8 @@ from catboost import CatBoostRegressor
 
 cbr = CatBoostRegressor(iterations=10000,
     logging_level='Silent',
-    depth=10, task_type='GPU',
+    depth=10,
+    # task_type='GPU',
     )
 
 
@@ -36,22 +36,24 @@ cbr = CatBoostRegressor(iterations=10000,
 # print "Mean result: {}".format(np.mean(scores))
 cbr.fit(X, y)
 
+print "Training finished"
+
 mean_y = np.mean(y)
 min_y = np.min(y)
 
 test = preprocess(test, CATEGORICAL_FEATURES)
-X = test[TEST_FEATURES].values
-predictions = cbr.predict(X)
+X_test = test[TEST_FEATURES].values
+predictions = cbr.predict(X_test)
 
 df = pd.concat([test.id, pd.Series(predictions)], axis=1)
 df = df.rename(columns={0: 'value'})
-df.to_csv("catboost_d10_i10000.csv", index=False)
+df.to_csv("catboost_d10_i10000_f1.csv", index=False)
 
 # Tweaked
 df_nonneg_min = df.copy()
 df_nonneg_min[df_nonneg_min < 0] = min_y
-df.to_csv("catboost_d10_i10000_nnmin.csv", index=False)
+df.to_csv("catboost_d10_i10000_nnmin_f1.csv", index=False)
 
 df_nonneg_mean = df.copy()
 df_nonneg_mean[df_nonneg_mean < 0] = mean_y
-df.to_csv("catboost_d10_i10000_nnmean.csv", index=False)
+df.to_csv("catboost_d10_i10000_nnmean_f1.csv", index=False)

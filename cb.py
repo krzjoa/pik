@@ -20,13 +20,17 @@ X, y = shuffle(X, y)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.75)
 
+
+print "N features: {}".format(X.shape[1])
+
 # Training simple model
 from catboost import CatBoostRegressor
 
 
 cbr = CatBoostRegressor(iterations=10000,
     logging_level='Silent',
-    depth=10, task_type='GPU',
+    depth=10,
+    #task_type='GPU',
     )
 
 
